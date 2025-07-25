@@ -11,6 +11,15 @@ connectToMongoDB("mongodb://127.0.0.1:27017/shopping-data")
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
+app.use((err, req, res, next) => {
+  if (err instanceof SyntaxError && err.status === 400 && 'body' in err) {
+    return res.status(400).json({
+      status: 400,
+      error: "Malformed JSON. Please send a valid JSON object like { \"id\": \"your_id_here\" }.",
+    });
+  }
+  next();
+});
 
 
 app.get('/index/url', (req, res) => {

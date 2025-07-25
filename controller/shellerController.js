@@ -49,4 +49,20 @@ async function handleFetchAllSheller(req, res) {
     }
 }
 
-module.exports = { handleCreateSheller, handleFetchAllSheller };
+async function handleFetchById(req, res) {
+    try {
+        const body = req.body;
+
+        console.log("start fetching by id", body.id);
+        if (!body.id || !mongoose.Types.ObjectId.isValid(body.id)) {
+            return res.status(400).json({ error: "ID Not found" });
+        }
+        const result = await Sheller.findById(body.id);
+        return res.status(200).json({ data: result, msg: "success" });
+    } catch (err) {
+        console.log("error is:", err);
+        return res.status(500).json({ err: err });
+    }
+}
+
+module.exports = { handleCreateSheller, handleFetchAllSheller, handleFetchById };
